@@ -7,14 +7,13 @@ urlpatterns = [
     path('', include('testApp.urls')),
 ]
 
-# debug_toolbarの設定
-# settings.pyで 'debug_toolbar' を INSTALLED_APPS から外している場合、
-# ここで import しようとするとエラーになるのを防ぐため、try-except を使います。
+# DEBUGモードかつdebug_toolbarがインストールされている場合のみ読み込む
 if settings.DEBUG:
     try:
         import debug_toolbar
-        urlpatterns = [
+        urlpatterns += [
             path('__debug__/', include(debug_toolbar.urls)),
-        ] + urlpatterns
-    except ImportError:
+        ]
+    except (ImportError, RuntimeError):
+        # debug_toolbarの設定に不備がある、または入っていない場合は無視する
         pass
