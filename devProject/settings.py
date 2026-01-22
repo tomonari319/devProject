@@ -2,22 +2,28 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 
-# .envファイルを読み込む
+# .envファイルを読み込む（ローカル用）
 load_dotenv()
 
 # プロジェクトのベースディレクトリ
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: 環境変数から読み込む（なければデフォルト値を使用）
+# --- セキュリティ設定 ---
+
+# Renderの環境変数にSECRET_KEYがあればそれを使う。なければデフォルト（ローカル用）
 SECRET_KEY = os.getenv('SECRET_KEY', "django-insecure-+uu^ewne%ngysr%49bejjr8#zwzgs#@y^n&sn#b1v-s%pc%w7)")
 
-# DEBUGモードの設定（.envで DEBUG=True なら True になる）
+# 重要：Render上では DEBUG=False になるように設定
+# 環境変数 DEBUG が 'True' の時だけ True になり、それ以外（Render等）は False になる
 DEBUG = os.getenv('DEBUG') == 'True'
 
-# 全てのホストからのアクセスを許可
+# 全てのホストと、Renderのドメインを許可
 ALLOWED_HOSTS = ['*']
+if os.getenv('RENDER_EXTERNAL_HOSTNAME'):
+    ALLOWED_HOSTS.append(os.getenv('RENDER_EXTERNAL_HOSTNAME'))
 
-# Application definition
+# --- アプリケーション定義 ---
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -27,18 +33,19 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'rest_framework',
     "testApp", 
-    # 'debug_toolbar',  # Waitressでの動作を安定させるため一時無効化
+    # 'debug_toolbar',  # 本番環境でのエラー回避のため無効化
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    # 静的ファイルを本番で配信するための設定（WhiteNoiseを入れるのが理想ですが、まずは標準）
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    # 'debug_toolbar.middleware.DebugToolbarMiddleware', # 一時無効化
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware', # 無効化
 ]
 
 ROOT_URLCONF = "devProject.urls"
@@ -60,7 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "devProject.wsgi.application"
 
-# Database
+# --- データベース ---
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -68,7 +75,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+# --- パスワードバリデーション ---
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -76,25 +83,23 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# Internationalization
-LANGUAGE_CODE = "ja"  # 日本語設定に変更
-TIME_ZONE = "Asia/Tokyo"  # 日本時間に変更
+# --- 国際化 ---
+LANGUAGE_CODE = "ja"
+TIME_ZONE = "Asia/Tokyo"
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# --- 静的ファイル設定 ---
 STATIC_URL = "/static/"
-# collectstatic コマンドの出力先を追加
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')] if os.path.exists(os.path.join(BASE_DIR, 'static')) else []
 
-# Default primary key field type
+# --- ログイン・セキュリティ追加設定 ---
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ログイン後のリダイレクト先
 LOGIN_REDIRECT_URL = '/'
 
-# CSRF信頼ドメイン（Waitressでの403対策）
-CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
-
-# Debug Toolbar 用設定（無効化中）
-INTERNAL_IPS = ["127.0.0.1"]
+# Render（HTTPS）でのCSRF対策
+if not DEBUG:
+    CSRF_TRUSTED_ORIGINS = [f"https://{os.getenv('RENDER_EXTERNAL_HOSTNAME')}"]
+else:
+    CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1:8000', 'http://localhost:8000']
