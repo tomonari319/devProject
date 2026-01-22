@@ -1,0 +1,27 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<h1 class="mb-4">新規投稿</h1>
+
+<form method="post">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label for="{{ form.title.id_for_label }}" class="form-label">
+      タイトル
+    </label>
+    {{ form.title }}
+  </div>
+
+  <div class="mb-3">
+    <label for="{{ form.content.id_for_label }}" class="form-label">
+      内容
+    </label>
+    {{ form.content }}
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    投稿する
+  </button>
+</form>
+{% endblock %}

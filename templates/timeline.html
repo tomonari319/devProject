@@ -1,0 +1,59 @@
+{% extends 'main/base.html' %}
+ 
+{% block content %}
+<h1 class="mb-4">タイムライン</h1>
+ 
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'post_create' %}" class="btn btn-success">
+        新規投稿
+    </a>
+</div>
+ 
+{% for post in posts %}
+  <div class="card mb-3">
+    <div class="card-header">{{ post.title|default:"タイトルなし" }}</div>
+   
+    <div class="card-body">
+      <p class="card-text">{{ post.content|linebreaksbr }}</p>
+    </div>
+   
+    <div class="card-footer text-muted">
+      投稿者: {{ post.author.username }} ({{ post.created_at }})
+    </div>
+   
+    <div class="card-footer d-flex justify-content-end">
+      <a href="{% url 'post_detail' post.pk %}" class="btn btn-sm btn-outline-primary">続きを読む</a>
+    </div>
+  </div>
+{% endfor %}
+{% endblock content %}
+ 
+{% if query %}
+<h2>「{{ query }}」の検索結果</h2>
+{% endif %}
+
+{% for post in posts %}
+<div class="card my-4">
+  <div class="card-body">
+    <p>{{ post.content }}</p>
+  </div>
+</div>
+{% empty %}
+<p>該当する投稿はありませんでした。</p>
+{% endfor %}
+
+{% if query %}
+<h2>「{{ query }}」の検索結果</h2>
+{% endif %}
+
+{% for post in posts %}
+<div class="card my-4">
+    <div class="card-body">
+        <p>{{ post.content }}</p>
+    </div>
+</div>
+{% empty %}
+<p>該当する投稿はありませんでした。</p>
+{% endfor %}
+
+

@@ -1,0 +1,91 @@
+/* 全体 */
+body {
+    font-family: "Helvetica", "Arial", sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 20px;
+}
+
+/* タイトル */
+h1 {
+    text-align: center;
+}
+
+/* レビューカード */
+.review-card {
+    background: white;
+    padding: 15px;
+    margin: 15px auto;
+    max-width: 600px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* 星評価 */
+.rating {
+    font-size: 20px;
+    margin: 5px 0;
+}
+
+/* コメント */
+.comment {
+    color: #333;
+}
+
+/* 編集・削除ボタンエリア */
+.review-buttons {
+    margin-top: 10px;
+}
+
+/* 共通ボタン（編集・削除） */
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-right: 8px;
+    text-decoration: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* 編集ボタン */
+.edit-btn {
+    background-color: #2196F3;
+}
+
+.edit-btn:hover {
+    background-color: #1976D2;
+}
+
+/* 削除ボタン */
+.delete-btn {
+    background-color: #f44336;
+}
+
+.delete-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* フォーム全体 */
+.review-form {
+    background: white;
+    padding: 20px;
+    margin: 30px auto;
+    max-width: 600px;
+    border-radius: 10px;
+}
+
+/* 投稿ボタン */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}

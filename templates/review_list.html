@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>レビュー一覧</title>
+
+    <!-- CSS読み込み -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <h1>レビュー一覧</h1>
+
+    {% for review in reviews %}
+        <div class="review-card">
+            <h2>{{ review.title }}</h2>
+
+            <p class="rating">
+                評価：
+                {% for i in "12345" %}
+                    {% if forloop.counter <= review.rating %}
+                        ⭐
+                    {% else %}
+                        ☆
+                    {% endif %}
+                {% endfor %}
+            </p>
+
+            <p class="comment">{{ review.comment }}</p>
+
+            <!-- 🔽 追加：編集・削除ボタン -->
+            <div class="review-buttons">
+                <a href="{% url 'review_edit' review.pk %}" class="btn edit-btn">
+                    編集
+                </a>
+
+                <a href="{% url 'review_delete' review.pk %}"
+                   class="btn delete-btn"
+                   onclick="return confirm('本当に削除しますか？');">
+                    削除
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <p>レビューはまだありません。</p>
+    {% endfor %}
+
+    <h2>レビューを投稿する</h2>
+
+    <form method="post" class="review-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">投稿</button>
+    </form>
+
+</body>
+</html>

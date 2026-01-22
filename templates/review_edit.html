@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>レビュー編集</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>レビュー編集</h1>
+
+<div class="review-form">
+    <form method="post">
+        {% csrf_token %}
+
+        <label>評価（1〜5）</label><br>
+        <input type="number" name="rating" min="1" max="5" value="{{ review.rating }}" required>
+        <br><br>
+
+        <label>コメント</label><br>
+        <textarea name="comment" rows="5" required>{{ review.comment }}</textarea>
+        <br><br>
+
+        <button type="submit">更新する</button>
+    </form>
+</div>
+
+</body>
+</html>
